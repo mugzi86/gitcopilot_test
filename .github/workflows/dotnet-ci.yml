@@ -1,0 +1,42 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - Test_PR_process 
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore Gitcopilot_testing.sln
+
+      - name: Build solution
+        run: dotnet build Gitcopilot_testing.sln --configuration Release --no-restore
+
+      - name: Test projects
+        shell: bash
+        run: |
+          mapfile -t test_projects < <(find . -name '*Tests.csproj' -o -name '*.Tests.csproj')
+
+          if [ ${#test_projects[@]} -eq 0 ]; then
+            echo "No test projects found. Skipping tests."
+            exit 0
+          fi
+
+          for project in "${test_projects[@]}"; do
+            dotnet test "$project" --configuration Release --no-build
+          done
