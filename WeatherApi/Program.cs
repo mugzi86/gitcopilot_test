@@ -38,4 +38,7 @@ app.MapGet("/error", () => Results.Problem("An error occurred."));
 app.MapGet("/weatherforecast", (WeatherService service) => service.GetWeatherForecast())
     .WithName("GetWeatherForecast");
 
+app.MapGet("/weather/temperature", (WeatherService service) => service.GetTemperatureRange())
+    .WithName("GetTemperatureRange");
+
 app.Run();
