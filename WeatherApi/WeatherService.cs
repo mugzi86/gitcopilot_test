@@ -25,7 +25,8 @@ public class WeatherService
     public WeatherForecast[] GetWeatherForecast()
     {
         const string cacheKey = "weatherforecast";
-        if (_cache.TryGetValue(cacheKey, out WeatherForecast[] forecast))
+        WeatherForecast[] forecast;
+        if (_cache.TryGetValue(cacheKey, out forecast))
         {
             _logger.LogInformation("Returning cached weather forecast");
             return forecast;
