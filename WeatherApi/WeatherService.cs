@@ -45,4 +45,17 @@ public class WeatherService
         _cache.Set(cacheKey, forecast, TimeSpan.FromMinutes(5));
         return forecast;
     }
+
+    public object GetTemperatureRange()
+    {
+        var forecast = GetWeatherForecast();
+        var temperatures = forecast.Select(f => f.TemperatureC).ToArray();
+        return new
+        {
+            MinCelsius = temperatures.Min(),
+            MaxCelsius = temperatures.Max(),
+            MinFahrenheit = temperatures.Min() * 9 / 5 + 32,
+            MaxFahrenheit = temperatures.Max() * 9 / 5 + 32
+        };
+    }
 }
